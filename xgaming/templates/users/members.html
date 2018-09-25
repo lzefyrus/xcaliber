@@ -1,0 +1,46 @@
+{% extends "layout.html" %}
+{% block content %}
+    <div class="container">
+        <h1>Welcome {{ current_user.email }}</h1>
+        <h3>This is where you bet and deposit money.</h3>
+        <h3 class="mt-5">Wallets</h3>
+        <div class="row">
+            <button type="button" class="btn btn-primary">
+                Euro <span class="badge badge-light">{{ current_user.real_wallet_balance }}</span>
+            </button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <button type="button" class="btn btn-secondary">
+                Bonus <span class="badge badge-light">{{ current_user.bonus_wallet_balance }}</span>
+            </button>
+        </div>
+        <br><br>
+        {% with messages = get_flashed_messages(with_categories=true, category_filter=["slot"]) %}
+            {% if messages %}
+                <div class="row">
+                    {% for slot in messages %}
+                        <button type="button" class="btn btn-outline-dark btn-lg">
+                            <i class="fa fa-{{ slot[-1] }}"></i>
+                        </button>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+        <form id="charge" class="form form-charge" method="POST" action="{{ url_for('user.members') }}" role="form">
+            {{ form.csrf_token }}
+            <div class="form-group">
+                {{ form.charge.label }}
+                {{ form.charge(placeholder="charge", class_="form-control") }}
+                <small id="betHelp" class="form-text text-muted">Add money to your wallet</small>
+            </div>
+            <p><input class="btn btn-primary" type="submit" value="Charge"></p>
+        </form>
+        <form id="spin" class="form form-charge" method="POST" action="{{ url_for('user.spin') }}" role="form">
+            {{ form.csrf_token }}
+            <input type="hidden" name="spin" value="1"/>
+            <div class="form-group">
+                <small id="spinHelp" class="form-text text-muted">Let's spin some rounds</small>
+            </div>
+            <p><input class="btn btn-primary btn-warning" type="submit" value="Spin !!!"></p>
+        </form>
+    </div>
+{% endblock %}
+
